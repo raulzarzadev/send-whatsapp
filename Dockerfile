@@ -33,7 +33,7 @@ RUN npm install -g pnpm
 
 # Copy package files
 COPY package.json ./
-COPY pnpm-lock.yaml* ./
+
 
 # Install production dependencies only
 RUN pnpm install --prod
