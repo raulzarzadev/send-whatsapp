@@ -4,9 +4,14 @@ node_modules/
 # Variables de entorno
 .env
 
-# Sesiones de WhatsApp
+# Sesiones de WhatsApp (ignorar archivos JSON solo en sessions/)
 sessions/
-*.json
+sessions/**/*.json
+
+# Archivos importantes que NO deben ignorarse
+!package.json
+!package-lock.json
+!tsconfig.json
 
 # Backups
 backup_sessions_*.tar.gz
