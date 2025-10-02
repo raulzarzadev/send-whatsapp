@@ -259,7 +259,11 @@ function updateSessionSelect(sessions) {
   const select = document.getElementById('message-session-id')
   const connectedSessions = sessions.filter((s) => s.status === 'connected')
 
-  select.innerHTML =
+  // Guardar la selección actual
+  const currentValue = select.value
+
+  // Crear el nuevo HTML
+  const newHTML =
     '<option value="">Selecciona una sesión</option>' +
     connectedSessions
       .map(
@@ -270,6 +274,19 @@ function updateSessionSelect(sessions) {
         `
       )
       .join('')
+
+  // Solo actualizar si el contenido cambió (para no perder el foco)
+  if (select.innerHTML !== newHTML) {
+    select.innerHTML = newHTML
+
+    // Restaurar la selección si todavía existe
+    if (
+      currentValue &&
+      connectedSessions.some((s) => s.sessionId === currentValue)
+    ) {
+      select.value = currentValue
+    }
+  }
 }
 
 // Create Session
