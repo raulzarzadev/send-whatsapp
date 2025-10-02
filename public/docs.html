@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Documentation - WhatsApp Multi-Instance</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    .endpoint-card {
+      transition: all 0.3s ease;
+    }
+
+    .endpoint-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .method-badge {
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.25rem;
+      display: inline-block;
+    }
+
+    .method-get {
+      background-color: #10b981;
+      color: white;
+    }
+
+    .method-post {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    .method-delete {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    pre code {
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .nav-link {
+      transition: all 0.2s ease;
+    }
+
+    .nav-link:hover {
+      background-color: #f3f4f6;
+      padding-left: 1rem;
+    }
+
+    .nav-link.active {
+      background-color: #10b981;
+      color: white;
+      border-left: 4px solid #059669;
+      padding-left: 1rem;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .code-block:hover .copy-btn {
+      opacity: 1;
+    }
+
+    .tab-button {
+      padding: 0.5rem 1rem;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-button.active {
+      border-bottom-color: #10b981;
+      color: #10b981;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50">
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <i class="fab fa-whatsapp text-3xl"></i>
+          <div>
+            <h1 class="text-xl font-bold">WhatsApp Multi-Instance API</h1>
+            <p class="text-green-100 text-xs">Documentación v1.0</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-3">
+          <a href="/"
+            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center space-x-2">
+            <i class="fas fa-home"></i>
+            <span class="hidden md:inline">Dashboard</span>
+          </a>
+          <a href="/config.html"
+            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center space-x-2">
+            <i class="fas fa-cog"></i>
+            <span class="hidden md:inline">Config</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <!-- Sidebar Navigation -->
+      <aside class="lg:col-span-1">
+        <div class="bg-white rounded-lg shadow-md p-4 sticky top-24">
+          <h3 class="font-bold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-book mr-2 text-green-600"></i>
+            Contenido
+          </h3>
+          <nav class="space-y-1">
+            <a href="#introduccion" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded">
+              <i class="fas fa-info-circle mr-2 text-blue-500"></i>Introducción
+            </a>
+            <a href="#autenticacion" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded">
+              <i class="fas fa-key mr-2 text-yellow-500"></i>Autenticación
+            </a>
+            <a href="#endpoints" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded">
+              <i class="fas fa-code mr-2 text-purple-500"></i>Endpoints
+            </a>
+            <a href="#health" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded ml-4">
+              └ Health Check
+            </a>
+            <a href="#create-session" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded ml-4">
+              └ Crear Sesión
+            </a>
+            <a href="#list-sessions" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded ml-4">
+              └ Listar Sesiones
+            </a>
+            <a href="#get-session" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded ml-4">
+              └ Obtener Sesión
+            </a>
+            <a href="#get-qr" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded ml-4">
+              └ Obtener QR
+            </a>
+            <a href="#delete-session" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded ml-4">
+              └ Eliminar Sesión
+            </a>
+            <a href="#send-message" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded ml-4">
+              └ Enviar Mensaje
+            </a>
+            <a href="#errores" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded">
+              <i class="fas fa-exclamation-triangle mr-2 text-red-500"></i>Códigos de Error
+            </a>
+            <a href="#ejemplos" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded">
+              <i class="fas fa-laptop-code mr-2 text-green-500"></i>Ejemplos
+            </a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="lg:col-span-3">
+        <!-- Introducción -->
+        <section id="introduccion" class="mb-12">
+          <div class="bg-white rounded-lg shadow-md p-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 flex items-center">
+              <i class="fas fa-info-circle text-blue-500 mr-3"></i>
+              Introducción
+            </h2>
+            <p class="text-gray-600 mb-4">
+              Bienvenido a la documentación de la API de WhatsApp Multi-Instance. Esta API te permite gestionar múltiples
+              instancias de WhatsApp simultáneamente y enviar mensajes de forma programática.
+            </p>
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+              <h3 class="font-bold text-blue-900 mb-2">
+                <i class="fas fa-lightbulb mr-2"></i>Características Principales
+              </h3>
+              <ul class="list-disc list-inside text-blue-800 space-y-1">
+                <li>Gestión de múltiples sesiones de WhatsApp</li>
+                <li>Generación y lectura de códigos QR</li>
+                <li>Envío de mensajes por sesión</li>
+                <li>Persistencia de sesiones</li>
+                <li>Autenticación por API Key</li>
+                <li>Rate limiting para seguridad</li>
+              </ul>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+              <div class="bg-gray-50 rounded-lg p-4">
+                <h4 class="font-semibold text-gray-800 mb-2">
+                  <i class="fas fa-server text-green-600 mr-2"></i>URL Base
+                </h4>
+                <code class="text-sm bg-gray-800 text-green-400 px-3 py-2 rounded block">
+                  https://tu-dominio.com/api
+                </code>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-4">
+                <h4 class="font-semibold text-gray-800 mb-2">
+                  <i class="fas fa-code text-blue-600 mr-2"></i>Formato
+                </h4>
+                <code class="text-sm bg-gray-800 text-blue-400 px-3 py-2 rounded block">
+                  Content-Type: application/json
+                </code>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Autenticación -->
+        <section id="autenticacion" class="mb-12">
+          <div class="bg-white rounded-lg shadow-md p-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 flex items-center">
+              <i class="fas fa-key text-yellow-500 mr-3"></i>
+              Autenticación
+            </h2>
+            <p class="text-gray-600 mb-4">
+              Todas las solicitudes a la API requieren autenticación mediante una API Key en el header
+              <code class="bg-gray-100 px-2 py-1 rounded text-sm">x-api-key</code>.
+            </p>
+
+            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-4">
+              <h3 class="font-bold text-yellow-900 mb-2">
+                <i class="fas fa-shield-alt mr-2"></i>Seguridad
+              </h3>
+              <p class="text-yellow-800 text-sm">
+                Configura tu API Key en las variables de entorno (<code>API_KEY</code>) y mantenla segura.
+                La API implementa rate limiting de 100 requests por minuto por IP.
+              </p>
+            </div>
+
+            <h3 class="font-semibold text-gray-800 mb-3 mt-6">Ejemplo de Header:</h3>
+            <div class="code-block relative">
+              <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                <i class="fas fa-copy mr-1"></i>Copiar
+              </button>
+              <pre><code class="language-http">x-api-key: tu-api-key-secreta-aqui</code></pre>
+            </div>
+
+            <h3 class="font-semibold text-gray-800 mb-3 mt-6">Ejemplo con cURL:</h3>
+            <div class="code-block relative">
+              <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                <i class="fas fa-copy mr-1"></i>Copiar
+              </button>
+              <pre><code class="language-bash">curl -X GET https://tu-dominio.com/api/health \
+  -H "x-api-key: tu-api-key-secreta-aqui"</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Endpoints -->
+        <section id="endpoints" class="mb-12">
+          <div class="bg-white rounded-lg shadow-md p-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+              <i class="fas fa-code text-purple-500 mr-3"></i>
+              Endpoints
+            </h2>
+
+            <!-- Health Check -->
+            <div id="health" class="endpoint-card border-l-4 border-green-500 bg-gray-50 rounded-lg p-6 mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                  <span class="method-badge method-get">GET</span>
+                  <code class="text-lg font-mono text-gray-800">/health</code>
+                </div>
+                <i class="fas fa-heartbeat text-green-500 text-2xl"></i>
+              </div>
+              <p class="text-gray-600 mb-4">Verifica el estado de la API.</p>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Respuesta Exitosa (200):</h4>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-json">{
+  "success": true,
+  "message": "WhatsApp API is running",
+  "timestamp": "2025-10-02T10:30:00.000Z"
+}</code></pre>
+              </div>
+            </div>
+
+            <!-- Create Session -->
+            <div id="create-session" class="endpoint-card border-l-4 border-blue-500 bg-gray-50 rounded-lg p-6 mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                  <span class="method-badge method-post">POST</span>
+                  <code class="text-lg font-mono text-gray-800">/sessions</code>
+                </div>
+                <i class="fas fa-plus-circle text-blue-500 text-2xl"></i>
+              </div>
+              <p class="text-gray-600 mb-4">Crea una nueva sesión de WhatsApp.</p>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Parámetros del Body:</h4>
+              <div class="bg-white rounded border border-gray-200 overflow-hidden mb-4">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-100">
+                    <tr>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Campo</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Tipo</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Requerido</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Descripción</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">clientId</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">string</td>
+                      <td class="px-4 py-2 text-sm">
+                        <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">Sí</span>
+                      </td>
+                      <td class="px-4 py-2 text-sm text-gray-600">Identificador del cliente</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">sessionId</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">string</td>
+                      <td class="px-4 py-2 text-sm">
+                        <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">No</span>
+                      </td>
+                      <td class="px-4 py-2 text-sm text-gray-600">ID personalizado (auto-generado si se omite)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Ejemplo de Request:</h4>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-json">{
+  "clientId": "restaurante-xyz",
+  "sessionId": "session-001"
+}</code></pre>
+              </div>
+
+              <h4 class="font-semibold text-gray-800 mb-2 mt-4">Respuesta Exitosa (201):</h4>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-json">{
+  "success": true,
+  "data": {
+    "sessionId": "session-001",
+    "clientId": "restaurante-xyz",
+    "status": "connecting",
+    "qrCode": null,
+    "phone": null,
+    "createdAt": "2025-10-02T10:30:00.000Z",
+    "lastActivity": "2025-10-02T10:30:00.000Z"
+  }
+}</code></pre>
+              </div>
+            </div>
+
+            <!-- List Sessions -->
+            <div id="list-sessions" class="endpoint-card border-l-4 border-green-500 bg-gray-50 rounded-lg p-6 mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                  <span class="method-badge method-get">GET</span>
+                  <code class="text-lg font-mono text-gray-800">/sessions</code>
+                </div>
+                <i class="fas fa-list text-green-500 text-2xl"></i>
+              </div>
+              <p class="text-gray-600 mb-4">Obtiene todas las sesiones o filtra por clientId.</p>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Query Parameters (Opcional):</h4>
+              <div class="bg-white rounded border border-gray-200 overflow-hidden mb-4">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-100">
+                    <tr>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Parámetro</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Tipo</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Descripción</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">clientId</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">string</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">Filtrar sesiones por cliente</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Respuesta Exitosa (200):</h4>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-json">{
+  "success": true,
+  "data": [
+    {
+      "sessionId": "session-001",
+      "clientId": "restaurante-xyz",
+      "status": "connected",
+      "qrCode": null,
+      "phone": "521234567890",
+      "createdAt": "2025-10-02T10:30:00.000Z",
+      "lastActivity": "2025-10-02T10:35:00.000Z"
+    }
+  ],
+  "count": 1
+}</code></pre>
+              </div>
+            </div>
+
+            <!-- Get Session -->
+            <div id="get-session" class="endpoint-card border-l-4 border-green-500 bg-gray-50 rounded-lg p-6 mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                  <span class="method-badge method-get">GET</span>
+                  <code class="text-lg font-mono text-gray-800">/sessions/:sessionId</code>
+                </div>
+                <i class="fas fa-search text-green-500 text-2xl"></i>
+              </div>
+              <p class="text-gray-600 mb-4">Obtiene información detallada de una sesión específica.</p>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Parámetros de URL:</h4>
+              <div class="bg-white rounded border border-gray-200 overflow-hidden mb-4">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-100">
+                    <tr>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Parámetro</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Descripción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">sessionId</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">ID de la sesión a consultar</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Respuesta Exitosa (200):</h4>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-json">{
+  "success": true,
+  "data": {
+    "sessionId": "session-001",
+    "clientId": "restaurante-xyz",
+    "status": "connected",
+    "qrCode": null,
+    "phone": "521234567890",
+    "createdAt": "2025-10-02T10:30:00.000Z",
+    "lastActivity": "2025-10-02T10:35:00.000Z"
+  }
+}</code></pre>
+              </div>
+            </div>
+
+            <!-- Get QR -->
+            <div id="get-qr" class="endpoint-card border-l-4 border-green-500 bg-gray-50 rounded-lg p-6 mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                  <span class="method-badge method-get">GET</span>
+                  <code class="text-lg font-mono text-gray-800">/sessions/:sessionId/qr</code>
+                </div>
+                <i class="fas fa-qrcode text-green-500 text-2xl"></i>
+              </div>
+              <p class="text-gray-600 mb-4">Obtiene el código QR de una sesión para escanear con WhatsApp.</p>
+
+              <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+                <p class="text-blue-800 text-sm">
+                  <i class="fas fa-info-circle mr-2"></i>
+                  El código QR solo está disponible cuando el estado es <code class="bg-blue-100 px-2 py-1 rounded">qr</code> 
+                  o <code class="bg-blue-100 px-2 py-1 rounded">connecting</code>.
+                </p>
+              </div>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Respuesta Exitosa (200):</h4>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-json">{
+  "success": true,
+  "data": {
+    "qrCode": "data:image/png;base64,iVBORw0KGgoAAAANS...",
+    "sessionId": "session-001",
+    "status": "qr"
+  }
+}</code></pre>
+              </div>
+            </div>
+
+            <!-- Delete Session -->
+            <div id="delete-session" class="endpoint-card border-l-4 border-red-500 bg-gray-50 rounded-lg p-6 mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                  <span class="method-badge method-delete">DELETE</span>
+                  <code class="text-lg font-mono text-gray-800">/sessions/:sessionId</code>
+                </div>
+                <i class="fas fa-trash text-red-500 text-2xl"></i>
+              </div>
+              <p class="text-gray-600 mb-4">Elimina una sesión y limpia todos sus datos asociados.</p>
+
+              <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+                <p class="text-red-800 text-sm">
+                  <i class="fas fa-exclamation-triangle mr-2"></i>
+                  Esta acción es irreversible. La sesión se desconectará y todos los datos se eliminarán permanentemente.
+                </p>
+              </div>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Respuesta Exitosa (200):</h4>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-json">{
+  "success": true,
+  "message": "Session deleted successfully"
+}</code></pre>
+              </div>
+            </div>
+
+            <!-- Send Message -->
+            <div id="send-message" class="endpoint-card border-l-4 border-blue-500 bg-gray-50 rounded-lg p-6 mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                  <span class="method-badge method-post">POST</span>
+                  <code class="text-lg font-mono text-gray-800">/messages/send</code>
+                </div>
+                <i class="fas fa-paper-plane text-blue-500 text-2xl"></i>
+              </div>
+              <p class="text-gray-600 mb-4">Envía un mensaje de WhatsApp a través de una sesión conectada.</p>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Parámetros del Body:</h4>
+              <div class="bg-white rounded border border-gray-200 overflow-hidden mb-4">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-100">
+                    <tr>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Campo</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Tipo</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Requerido</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Descripción</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">sessionId</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">string</td>
+                      <td class="px-4 py-2 text-sm">
+                        <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">Sí</span>
+                      </td>
+                      <td class="px-4 py-2 text-sm text-gray-600">ID de la sesión conectada</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">to</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">string</td>
+                      <td class="px-4 py-2 text-sm">
+                        <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">Sí</span>
+                      </td>
+                      <td class="px-4 py-2 text-sm text-gray-600">Número con código de país (ej: 521234567890)</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">message</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">string</td>
+                      <td class="px-4 py-2 text-sm">
+                        <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">Sí</span>
+                      </td>
+                      <td class="px-4 py-2 text-sm text-gray-600">Contenido del mensaje</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Ejemplo de Request:</h4>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-json">{
+  "sessionId": "session-001",
+  "to": "521234567890",
+  "message": "¡Hola! Este es un mensaje de prueba."
+}</code></pre>
+              </div>
+
+              <h4 class="font-semibold text-gray-800 mb-2 mt-4">Respuesta Exitosa (200):</h4>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-json">{
+  "success": true,
+  "message": "Message sent successfully",
+  "data": {
+    "sessionId": "session-001",
+    "to": "521234567890",
+    "sentAt": "2025-10-02T10:35:00.000Z"
+  }
+}</code></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Códigos de Error -->
+        <section id="errores" class="mb-12">
+          <div class="bg-white rounded-lg shadow-md p-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+              <i class="fas fa-exclamation-triangle text-red-500 mr-3"></i>
+              Códigos de Error
+            </h2>
+
+            <div class="space-y-4">
+              <div class="border-l-4 border-red-500 bg-red-50 p-4">
+                <h3 class="font-bold text-red-900 mb-2">400 - Bad Request</h3>
+                <p class="text-red-800 text-sm">Solicitud malformada o parámetros faltantes.</p>
+                <div class="code-block relative mt-2">
+                  <pre><code class="language-json">{
+  "success": false,
+  "error": "clientId is required"
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="border-l-4 border-yellow-500 bg-yellow-50 p-4">
+                <h3 class="font-bold text-yellow-900 mb-2">401 - Unauthorized</h3>
+                <p class="text-yellow-800 text-sm">API Key inválida o faltante.</p>
+                <div class="code-block relative mt-2">
+                  <pre><code class="language-json">{
+  "success": false,
+  "error": "Unauthorized: Invalid or missing API key"
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="border-l-4 border-orange-500 bg-orange-50 p-4">
+                <h3 class="font-bold text-orange-900 mb-2">404 - Not Found</h3>
+                <p class="text-orange-800 text-sm">Recurso no encontrado.</p>
+                <div class="code-block relative mt-2">
+                  <pre><code class="language-json">{
+  "success": false,
+  "error": "Session not found"
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="border-l-4 border-red-600 bg-red-50 p-4">
+                <h3 class="font-bold text-red-900 mb-2">429 - Too Many Requests</h3>
+                <p class="text-red-800 text-sm">Límite de rate limiting excedido (100 req/min).</p>
+                <div class="code-block relative mt-2">
+                  <pre><code class="language-json">{
+  "success": false,
+  "error": "Too many requests. Please try again later."
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="border-l-4 border-purple-500 bg-purple-50 p-4">
+                <h3 class="font-bold text-purple-900 mb-2">500 - Internal Server Error</h3>
+                <p class="text-purple-800 text-sm">Error interno del servidor.</p>
+                <div class="code-block relative mt-2">
+                  <pre><code class="language-json">{
+  "success": false,
+  "error": "Failed to send message"
+}</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Ejemplos -->
+        <section id="ejemplos" class="mb-12">
+          <div class="bg-white rounded-lg shadow-md p-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+              <i class="fas fa-laptop-code text-green-500 mr-3"></i>
+              Ejemplos de Uso
+            </h2>
+
+            <!-- Tabs -->
+            <div class="border-b border-gray-200 mb-6">
+              <div class="flex space-x-4">
+                <button onclick="switchTab('curl')" class="tab-button active" data-tab="curl">
+                  <i class="fas fa-terminal mr-2"></i>cURL
+                </button>
+                <button onclick="switchTab('javascript')" class="tab-button" data-tab="javascript">
+                  <i class="fab fa-js mr-2"></i>JavaScript
+                </button>
+                <button onclick="switchTab('python')" class="tab-button" data-tab="python">
+                  <i class="fab fa-python mr-2"></i>Python
+                </button>
+                <button onclick="switchTab('nodejs')" class="tab-button" data-tab="nodejs">
+                  <i class="fab fa-node-js mr-2"></i>Node.js
+                </button>
+              </div>
+            </div>
+
+            <!-- cURL Examples -->
+            <div id="curl-examples" class="tab-content">
+              <h3 class="font-semibold text-gray-800 mb-3">Crear una sesión:</h3>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-bash">curl -X POST https://tu-dominio.com/api/sessions \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: tu-api-key-secreta" \
+  -d '{
+    "clientId": "restaurante-xyz",
+    "sessionId": "session-001"
+  }'</code></pre>
+              </div>
+
+              <h3 class="font-semibold text-gray-800 mb-3 mt-6">Enviar un mensaje:</h3>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-bash">curl -X POST https://tu-dominio.com/api/messages/send \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: tu-api-key-secreta" \
+  -d '{
+    "sessionId": "session-001",
+    "to": "521234567890",
+    "message": "¡Hola! Este es un mensaje de prueba."
+  }'</code></pre>
+              </div>
+
+              <h3 class="font-semibold text-gray-800 mb-3 mt-6">Obtener código QR:</h3>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-bash">curl -X GET https://tu-dominio.com/api/sessions/session-001/qr \
+  -H "x-api-key: tu-api-key-secreta"</code></pre>
+              </div>
+            </div>
+
+            <!-- JavaScript Examples -->
+            <div id="javascript-examples" class="tab-content hidden">
+              <h3 class="font-semibold text-gray-800 mb-3">Crear una sesión:</h3>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-javascript">const apiKey = 'tu-api-key-secreta';
+const baseUrl = 'https://tu-dominio.com/api';
+
+fetch(`${baseUrl}/sessions`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': apiKey
+  },
+  body: JSON.stringify({
+    clientId: 'restaurante-xyz',
+    sessionId: 'session-001'
+  })
+})
+.then(response => response.json())
+.then(data => console.log('Sesión creada:', data))
+.catch(error => console.error('Error:', error));</code></pre>
+              </div>
+
+              <h3 class="font-semibold text-gray-800 mb-3 mt-6">Enviar un mensaje:</h3>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-javascript">fetch(`${baseUrl}/messages/send`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': apiKey
+  },
+  body: JSON.stringify({
+    sessionId: 'session-001',
+    to: '521234567890',
+    message: '¡Hola! Este es un mensaje de prueba.'
+  })
+})
+.then(response => response.json())
+.then(data => console.log('Mensaje enviado:', data))
+.catch(error => console.error('Error:', error));</code></pre>
+              </div>
+            </div>
+
+            <!-- Python Examples -->
+            <div id="python-examples" class="tab-content hidden">
+              <h3 class="font-semibold text-gray-800 mb-3">Crear una sesión:</h3>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-python">import requests
+
+api_key = 'tu-api-key-secreta'
+base_url = 'https://tu-dominio.com/api'
+
+headers = {
+    'Content-Type': 'application/json',
+    'x-api-key': api_key
+}
+
+data = {
+    'clientId': 'restaurante-xyz',
+    'sessionId': 'session-001'
+}
+
+response = requests.post(f'{base_url}/sessions', 
+                        headers=headers, 
+                        json=data)
+
+print('Sesión creada:', response.json())</code></pre>
+              </div>
+
+              <h3 class="font-semibold text-gray-800 mb-3 mt-6">Enviar un mensaje:</h3>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-python">data = {
+    'sessionId': 'session-001',
+    'to': '521234567890',
+    'message': '¡Hola! Este es un mensaje de prueba.'
+}
+
+response = requests.post(f'{base_url}/messages/send',
+                        headers=headers,
+                        json=data)
+
+print('Mensaje enviado:', response.json())</code></pre>
+              </div>
+            </div>
+
+            <!-- Node.js Examples -->
+            <div id="nodejs-examples" class="tab-content hidden">
+              <h3 class="font-semibold text-gray-800 mb-3">Crear una sesión (con axios):</h3>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-javascript">const axios = require('axios');
+
+const apiKey = 'tu-api-key-secreta';
+const baseUrl = 'https://tu-dominio.com/api';
+
+async function createSession() {
+  try {
+    const response = await axios.post(`${baseUrl}/sessions`, {
+      clientId: 'restaurante-xyz',
+      sessionId: 'session-001'
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      }
+    });
+    
+    console.log('Sesión creada:', response.data);
+  } catch (error) {
+    console.error('Error:', error.response?.data || error.message);
+  }
+}
+
+createSession();</code></pre>
+              </div>
+
+              <h3 class="font-semibold text-gray-800 mb-3 mt-6">Enviar un mensaje:</h3>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)" class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-javascript">async function sendMessage() {
+  try {
+    const response = await axios.post(`${baseUrl}/messages/send`, {
+      sessionId: 'session-001',
+      to: '521234567890',
+      message: '¡Hola! Este es un mensaje de prueba.'
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      }
+    });
+    
+    console.log('Mensaje enviado:', response.data);
+  } catch (error) {
+    console.error('Error:', error.response?.data || error.message);
+  }
+}
+
+sendMessage();</code></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Flow Example -->
+        <section class="mb-12">
+          <div class="bg-white rounded-lg shadow-md p-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+              <i class="fas fa-project-diagram text-indigo-500 mr-3"></i>
+              Flujo de Trabajo Típico
+            </h2>
+
+            <div class="space-y-4">
+              <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">
+                  1
+                </div>
+                <div class="flex-1">
+                  <h3 class="font-semibold text-gray-800 mb-1">Crear una sesión</h3>
+                  <p class="text-gray-600 text-sm">
+                    Usa <code class="bg-gray-100 px-2 py-1 rounded text-xs">POST /sessions</code> para crear una nueva instancia de WhatsApp.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
+                  2
+                </div>
+                <div class="flex-1">
+                  <h3 class="font-semibold text-gray-800 mb-1">Obtener el código QR</h3>
+                  <p class="text-gray-600 text-sm">
+                    Usa <code class="bg-gray-100 px-2 py-1 rounded text-xs">GET /sessions/:sessionId/qr</code> para obtener el QR y escanearlo con WhatsApp.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold">
+                  3
+                </div>
+                <div class="flex-1">
+                  <h3 class="font-semibold text-gray-800 mb-1">Verificar conexión</h3>
+                  <p class="text-gray-600 text-sm">
+                    Usa <code class="bg-gray-100 px-2 py-1 rounded text-xs">GET /sessions/:sessionId</code> para verificar que el estado sea <code class="bg-green-100 px-2 py-1 rounded text-xs">connected</code>.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold">
+                  4
+                </div>
+                <div class="flex-1">
+                  <h3 class="font-semibold text-gray-800 mb-1">Enviar mensajes</h3>
+                  <p class="text-gray-600 text-sm">
+                    Usa <code class="bg-gray-100 px-2 py-1 rounded text-xs">POST /messages/send</code> para enviar mensajes a tus contactos.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-8 mt-12">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="font-bold mb-4 flex items-center">
+            <i class="fab fa-whatsapp mr-2"></i>
+            WhatsApp Multi-Instance API
+          </h3>
+          <p class="text-gray-400 text-sm">
+            Gestiona múltiples instancias de WhatsApp de forma programática y profesional.
+          </p>
+        </div>
+        <div>
+          <h3 class="font-bold mb-4">Enlaces Rápidos</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/" class="text-gray-400 hover:text-white transition">Dashboard</a></li>
+            <li><a href="/config.html" class="text-gray-400 hover:text-white transition">Configuración</a></li>
+            <li><a href="/docs.html" class="text-gray-400 hover:text-white transition">Documentación</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-bold mb-4">Recursos</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="https://github.com/WhiskeySockets/Baileys" target="_blank" class="text-gray-400 hover:text-white transition">
+              <i class="fab fa-github mr-2"></i>Baileys (WhatsApp Web API)
+            </a></li>
+            <li><a href="#ejemplos" class="text-gray-400 hover:text-white transition">
+              <i class="fas fa-code mr-2"></i>Ejemplos de Código
+            </a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+        <p>&copy; 2025 WhatsApp Multi-Instance API. Desarrollado con ❤️</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Syntax highlighting
+    document.addEventListener('DOMContentLoaded', () => {
+      hljs.highlightAll();
+      updateActiveNavLink();
+      window.addEventListener('scroll', updateActiveNavLink);
+    });
+
+    // Copy code to clipboard
+    function copyCode(button) {
+      const codeBlock = button.nextElementSibling;
+      const code = codeBlock.querySelector('code').textContent;
+      
+      navigator.clipboard.writeText(code).then(() => {
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check mr-1"></i>Copiado';
+        button.classList.add('bg-green-600');
+        
+        setTimeout(() => {
+          button.innerHTML = originalHTML;
+          button.classList.remove('bg-green-600');
+        }, 2000);
+      });
+    }
+
+    // Tab switching
+    function switchTab(tabName) {
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+      });
+      
+      // Remove active class from all buttons
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+      });
+      
+      // Show selected tab content
+      document.getElementById(`${tabName}-examples`).classList.remove('hidden');
+      
+      // Add active class to clicked button
+      document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+    }
+
+    // Update active navigation link on scroll
+    function updateActiveNavLink() {
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('.nav-link');
+      
+      let current = '';
+      
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.pageYOffset >= sectionTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+      
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+          link.classList.add('active');
+        }
+      });
+    }
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 100,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
