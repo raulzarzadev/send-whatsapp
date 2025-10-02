@@ -3,6 +3,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Install git and python (needed for some npm packages)
+RUN apk add --no-cache git python3 make g++
+
 # Copy package files
 COPY package.json ./
 
@@ -23,6 +26,9 @@ RUN npm run build
 FROM node:20-alpine
 
 WORKDIR /app
+
+# Install git (needed for npm install)
+RUN apk add --no-cache git
 
 # Copy package files
 COPY package.json ./
