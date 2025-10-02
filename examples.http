@@ -1,0 +1,160 @@
+### ============================================
+### GUÍA PASO A PASO PARA USAR LA API
+### ============================================
+
+### PASO 1: Verificar que el servidor está corriendo
+GET http://localhost:3000/api/health
+x-api-key: change-me-in-production-use-a-strong-secret-key
+
+###
+
+### PASO 2: Crear una nueva sesión de WhatsApp
+# @name newSession
+POST http://localhost:3000/api/sessions
+Content-Type: application/json
+x-api-key: change-me-in-production-use-a-strong-secret-key
+
+{
+  "clientId": "mi-empresa"
+}
+
+# IMPORTANTE: Guarda el sessionId de la respuesta
+# Lo necesitarás para los siguientes pasos
+
+###
+
+### PASO 3: Obtener el código QR
+# Reemplaza SESSION_ID_AQUI con el sessionId que obtuviste en el paso anterior
+GET http://localhost:3000/api/sessions/SESSION_ID_AQUI/qr
+x-api-key: change-me-in-production-use-a-strong-secret-key
+
+# INSTRUCCIONES:
+# 1. Copia el valor de "qrCode" de la respuesta
+# 2. Abre WhatsApp en tu teléfono
+# 3. Ve a: Configuración > Dispositivos vinculados > Vincular dispositivo
+# 4. Escanea el código QR
+# 
+# Puedes usar este sitio para generar el QR visual:
+# https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=TU_CODIGO_QR_AQUI
+
+###
+
+### PASO 4: Verificar que la sesión esté conectada
+GET http://localhost:3000/api/sessions/SESSION_ID_AQUI
+x-api-key: change-me-in-production-use-a-strong-secret-key
+
+# Busca el campo "status": debe ser "connected"
+
+###
+
+### PASO 5: Enviar tu primer mensaje
+POST http://localhost:3000/api/messages/send
+Content-Type: application/json
+x-api-key: change-me-in-production-use-a-strong-secret-key
+
+{
+  "sessionId": "SESSION_ID_AQUI",
+  "to": "521234567890",
+  "message": "¡Hola! Este es mi primer mensaje desde la API 🎉"
+}
+
+# NOTA: Reemplaza el número con uno válido (con código de país)
+
+###
+
+### PASO 6: Ver todas tus sesiones activas
+GET http://localhost:3000/api/sessions
+x-api-key: change-me-in-production-use-a-strong-secret-key
+
+###
+
+### ============================================
+### EJEMPLOS AVANZADOS
+### ============================================
+
+### Crear múltiples sesiones para diferentes clientes
+# @name cliente1
+POST http://localhost:3000/api/sessions
+Content-Type: application/json
+x-api-key: change-me-in-production-use-a-strong-secret-key
+
+{
+  "clientId": "restaurante-xyz",
+  "sessionId": "restaurante-principal"
+}
+
+###
+
+# @name cliente2
+POST http://localhost:3000/api/sessions
+Content-Type: application/json
+x-api-key: change-me-in-production-use-a-strong-secret-key
+
+{
+  "clientId": "tienda-online-abc",
+  "sessionId": "tienda-ventas"
+}
+
+###
+
+# @name cliente3
+POST http://localhost:3000/api/sessions
+Content-Type: application/json
+x-api-key: change-me-in-production-use-a-strong-secret-key
+
+{
+  "clientId": "tienda-online-abc",
+  "sessionId": "tienda-soporte"
+}
+
+###
+
+### Filtrar sesiones por cliente específico
+GET http://localhost:3000/api/sessions?clientId=tienda-online-abc
+x-api-key: change-me-in-production-use-a-strong-secret-key
+
+###
+
+### Enviar mensaje con emojis y caracteres especiales
+POST http://localhost:3000/api/messages/send
+Content-Type: application/json
+x-api-key: change-me-in-production-use-a-strong-secret-key
+
+{
+  "sessionId": "SESSION_ID_AQUI",
+  "to": "521234567890",
+  "message": "🎉 ¡Oferta Especial! 🎉\n\n✨ 50% de descuento\n📦 Envío gratis\n⏰ Solo por hoy\n\n¡No te lo pierdas! 🚀"
+}
+
+###
+
+### Enviar mensaje a múltiples números (hacer varias llamadas)
+POST http://localhost:3000/api/messages/send
+Content-Type: application/json
+x-api-key: change-me-in-production-use-a-strong-secret-key
+
+{
+  "sessionId": "SESSION_ID_AQUI",
+  "to": "521111111111",
+  "message": "Mensaje para el cliente 1"
+}
+
+###
+
+POST http://localhost:3000/api/messages/send
+Content-Type: application/json
+x-api-key: change-me-in-production-use-a-strong-secret-key
+
+{
+  "sessionId": "SESSION_ID_AQUI",
+  "to": "522222222222",
+  "message": "Mensaje para el cliente 2"
+}
+
+###
+
+### Eliminar una sesión cuando ya no la necesites
+DELETE http://localhost:3000/api/sessions/SESSION_ID_AQUI
+x-api-key: change-me-in-production-use-a-strong-secret-key
+
+###

@@ -1,0 +1,137 @@
+### Variables
+@baseUrl = http://localhost:3000/api
+@apiKey = change-me-in-production-use-a-strong-secret-key
+@sessionId = {{createSession.response.body.data.sessionId}}
+
+### Health Check
+GET http://localhost:3000/api/health
+x-api-key: {{apiKey}}
+
+###
+
+### 1. Crear Nueva Sesión
+# @name createSession
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "clientId": "cliente-test-001"
+}
+
+###
+
+### 2. Crear Sesión con ID Personalizado
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "clientId": "cliente-test-002",
+  "sessionId": "mi-sesion-personalizada"
+}
+
+###
+
+### 3. Obtener Todas las Sesiones
+GET {{baseUrl}}/sessions
+x-api-key: {{apiKey}}
+
+###
+
+### 4. Filtrar Sesiones por Cliente
+GET {{baseUrl}}/sessions?clientId=cliente-test-001
+x-api-key: {{apiKey}}
+
+###
+
+### 5. Obtener Sesión Específica
+# Reemplaza SESSION_ID con el ID real de tu sesión
+GET {{baseUrl}}/sessions/{{sessionId}}
+x-api-key: {{apiKey}}
+
+###
+
+### 6. Obtener Código QR de una Sesión
+# Reemplaza SESSION_ID con el ID real de tu sesión
+GET {{baseUrl}}/sessions/{{sessionId}}/qr
+x-api-key: {{apiKey}}
+
+###
+
+### 7. Enviar Mensaje de WhatsApp
+# Asegúrate de que la sesión esté conectada primero
+POST {{baseUrl}}/messages/send
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "sessionId": "{{sessionId}}",
+  "to": "521234567890",
+  "message": "¡Hola! Este es un mensaje de prueba desde la API 🚀"
+}
+
+###
+
+### 8. Enviar Mensaje con Número en Formato Internacional
+POST {{baseUrl}}/messages/send
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "sessionId": "TU_SESSION_ID",
+  "to": "1234567890@s.whatsapp.net",
+  "message": "Mensaje con formato completo de WhatsApp"
+}
+
+###
+
+### 9. Eliminar Sesión
+# Reemplaza SESSION_ID con el ID real de tu sesión
+DELETE {{baseUrl}}/sessions/{{sessionId}}
+x-api-key: {{apiKey}}
+
+###
+
+### ==========================================
+### PRUEBAS DE ERRORES Y CASOS EDGE
+### ==========================================
+
+### Error: Sin API Key
+GET {{baseUrl}}/sessions
+
+###
+
+### Error: API Key Incorrecta
+GET {{baseUrl}}/sessions
+x-api-key: clave-incorrecta
+
+###
+
+### Error: Crear sesión sin clientId
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "sessionId": "test-sin-client"
+}
+
+###
+
+### Error: Enviar mensaje sin parámetros requeridos
+POST {{baseUrl}}/messages/send
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "sessionId": "test"
+}
+
+###
+
+### Error: Obtener sesión inexistente
+GET {{baseUrl}}/sessions/sesion-que-no-existe
+x-api-key: {{apiKey}}
+
+###

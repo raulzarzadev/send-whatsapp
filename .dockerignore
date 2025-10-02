@@ -1,0 +1,33 @@
+# Docker ignore
+node_modules/
+npm-debug.log
+.git/
+.gitignore
+
+# TypeScript
+dist/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Sessions and logs
+sessions/
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+README.md
+docs/
