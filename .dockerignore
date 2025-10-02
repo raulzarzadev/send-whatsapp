@@ -28,6 +28,13 @@ logs/
 .DS_Store
 Thumbs.db
 
+# Documentation (opcional, comentar si quieres incluirlos en la imagen)
+# README.md
+# DEPLOY.md
+# QUICKSTART.md
+# PROJECT_SUMMARY.md
+# *.http
+
 # Documentation
 README.md
 docs/
