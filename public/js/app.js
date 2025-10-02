@@ -408,15 +408,207 @@ async function refreshSession(sessionId) {
   }
 }
 
+// Messages Management
+let currentPage = 1
+const pageSize = 20
+let currentFilters = {}
+
+async function loadMessagesStats() {
+  try {
+    const response = await apiRequest('/messages/stats')
+    const data = response.data || response // Manejar ambos formatos
+    document.getElementById('messages-total').textContent = data.total || 0
+    document.getElementById('messages-sent').textContent = data.sent || 0
+    document.getElementById('messages-failed').textContent = data.failed || 0
+  } catch (error) {
+    console.error('Error loading messages stats:', error)
+    // Set default values on error
+    document.getElementById('messages-total').textContent = '0'
+    document.getElementById('messages-sent').textContent = '0'
+    document.getElementById('messages-failed').textContent = '0'
+  }
+}
+
+async function loadMessages() {
+  try {
+    const params = new URLSearchParams({
+      limit: pageSize,
+      offset: (currentPage - 1) * pageSize,
+      ...currentFilters
+    })
+
+    const response = await apiRequest(`/messages/logs?${params}`)
+    const logs = response.data || [] // La API devuelve los logs en response.data
+
+    renderMessagesTable(logs)
+    document.getElementById('messages-showing').textContent = logs.length
+
+    // Update pagination buttons
+    document.getElementById(
+      'current-page'
+    ).textContent = `Página ${currentPage}`
+    document.getElementById('prev-page-btn').disabled = currentPage === 1
+    document.getElementById('next-page-btn').disabled = logs.length < pageSize
+  } catch (error) {
+    console.error('Error loading messages:', error)
+    showToast('Error al cargar mensajes', 'error')
+    renderMessagesTable([]) // Render empty table on error
+  }
+}
+
+function renderMessagesTable(messages) {
+  const tbody = document.getElementById('messages-table-body')
+
+  // Asegurar que messages es un array
+  if (!Array.isArray(messages)) {
+    messages = []
+  }
+
+  if (messages.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+          <i class="fas fa-inbox text-4xl mb-2"></i>
+          <p>No hay mensajes para mostrar</p>
+        </td>
+      </tr>
+    `
+    return
+  }
+
+  tbody.innerHTML = messages
+    .map((msg) => {
+      const statusBadge =
+        msg.status === 'sent'
+          ? '<span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full"><i class="fas fa-check"></i> Enviado</span>'
+          : '<span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full"><i class="fas fa-times"></i> Fallido</span>'
+
+      const errorInfo = msg.error
+        ? `<br><small class="text-red-600" title="${
+            msg.error
+          }"><i class="fas fa-exclamation-circle"></i> ${msg.error.substring(
+            0,
+            50
+          )}...</small>`
+        : ''
+
+      return `
+      <tr class="hover:bg-gray-50">
+        <td class="px-4 py-3 text-sm text-gray-500">
+          ${formatDate(msg.timestamp)}
+        </td>
+        <td class="px-4 py-3 text-sm text-gray-900">
+          <span class="font-medium">${msg.sessionId}</span>
+          ${
+            msg.clientId
+              ? `<br><small class="text-gray-500">${msg.clientId}</small>`
+              : ''
+          }
+        </td>
+        <td class="px-4 py-3 text-sm text-gray-900">
+          ${msg.to}
+        </td>
+        <td class="px-4 py-3 text-sm text-gray-700">
+          <div class="max-w-xs truncate" title="${msg.message}">
+            ${msg.message}
+          </div>
+        </td>
+        <td class="px-4 py-3 text-sm">
+          ${statusBadge}
+          ${errorInfo}
+        </td>
+      </tr>
+    `
+    })
+    .join('')
+}
+
+async function populateSessionFilter() {
+  try {
+    const sessions = await apiRequest('/sessions')
+    const select = document.getElementById('filter-session')
+
+    // Keep "Todas" option
+    select.innerHTML = '<option value="">Todas</option>'
+
+    // Asegurar que sessions es un array
+    if (Array.isArray(sessions)) {
+      sessions.forEach((session) => {
+        const option = document.createElement('option')
+        option.value = session.sessionId
+        option.textContent = session.sessionId
+        select.appendChild(option)
+      })
+    }
+  } catch (error) {
+    console.error('Error populating session filter:', error)
+  }
+}
+
+function toggleMessagesView() {
+  const container = document.getElementById('messages-list-container')
+  const btn = document.getElementById('toggle-messages-btn')
+  const isHidden = container.classList.contains('hidden')
+
+  if (isHidden) {
+    container.classList.remove('hidden')
+    btn.innerHTML = '<i class="fas fa-eye-slash"></i><span>Ocultar</span>'
+    loadMessages()
+    populateSessionFilter()
+  } else {
+    container.classList.add('hidden')
+    btn.innerHTML = '<i class="fas fa-eye"></i><span>Ver Mensajes</span>'
+  }
+}
+
+function applyFilters() {
+  currentFilters = {}
+
+  const sessionId = document.getElementById('filter-session').value
+  const status = document.getElementById('filter-status').value
+  const to = document.getElementById('filter-to').value
+
+  if (sessionId) currentFilters.sessionId = sessionId
+  if (status) currentFilters.status = status
+  if (to) currentFilters.to = to
+
+  currentPage = 1
+  loadMessages()
+}
+
+function nextPage() {
+  currentPage++
+  loadMessages()
+}
+
+function prevPage() {
+  if (currentPage > 1) {
+    currentPage--
+    loadMessages()
+  }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   checkApiStatus()
   loadSessions()
+  loadMessagesStats()
+
+  // Event listeners for messages
+  document
+    .getElementById('toggle-messages-btn')
+    .addEventListener('click', toggleMessagesView)
+  document
+    .getElementById('apply-filters-btn')
+    .addEventListener('click', applyFilters)
+  document.getElementById('next-page-btn').addEventListener('click', nextPage)
+  document.getElementById('prev-page-btn').addEventListener('click', prevPage)
 
   // Auto-refresh every 10 seconds
   setInterval(() => {
     loadSessions()
     checkApiStatus()
+    loadMessagesStats()
   }, 10000)
 })
 
