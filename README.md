@@ -1,6 +1,10 @@
 # WhatsApp Multi-Instance API 📱
 
-API RESTful para gestionar múltiples instancias de WhatsApp usando [Baileys](https://github.com/WhiskeySockets/Baileys). Perfecto para empresas que necesitan conectar múltiples números de WhatsApp a diferentes clientes o aplicaciones.
+API RESTful con interfaz web para gestionar múltiples instancias de WhatsApp usando [Baileys](https://github.com/WhiskeySockets/Baileys). Perfecto para empresas que necesitan conectar múltiples números de WhatsApp a diferentes clientes o aplicaciones.
+
+> 🚀 **¿Primera vez?** Lee la [Guía de Inicio Rápido](QUICKSTART.md) para estar funcionando en 5 minutos.
+
+> 🌐 **¿Quieres desplegar en producción?** Consulta la [Guía de Despliegue](DEPLOY.md).
 
 ## 🌟 Cara3. **Configurar**
 
@@ -16,14 +20,18 @@ nano .env  # Editar variables
 ````bash
 docker-compose up -d
 # o con docker compose: docker compose up -d
-```✅ **Multi-instancia**: Maneja múltiples sesiones de WhatsApp simultáneamente
+```## 🌟 Características
+
+- ✅ **Interfaz Web**: Dashboard moderno para gestionar sesiones visualmente
+- ✅ **Multi-instancia**: Maneja múltiples sesiones de WhatsApp simultáneamente
 - ✅ **API RESTful**: Endpoints fáciles de integrar
-- ✅ **Gestión de QR**: Obtén códigos QR para autenticación
+- ✅ **Gestión de QR**: Obtén y escanea códigos QR desde la interfaz
 - ✅ **Persistencia**: Las sesiones se mantienen después de reiniciar
 - ✅ **Autenticación**: Protección con API keys
 - ✅ **Docker Ready**: Fácil despliegue con Docker y Docker Compose
 - ✅ **TypeScript**: Código tipado y mantenible
 - ✅ **Cloud Ready**: Listo para desplegar en cualquier nube
+- ✅ **Estadísticas en tiempo real**: Monitoreo del estado de todas las sesiones
 
 ## 📋 Requisitos Previos
 
@@ -71,13 +79,50 @@ pnpm dev
 # o con npm: npm run dev
 ```
 
-5. **Compilar y ejecutar en producción**
+5. **Abrir la interfaz web**
+
+```
+http://localhost:3000
+```
+
+6. **Compilar y ejecutar en producción**
 
 ```bash
 pnpm build
 pnpm start
 # o con npm: npm run build && npm start
 ```
+
+## 🖥️ Interfaz Web
+
+La aplicación incluye una interfaz web moderna y fácil de usar:
+
+### Características de la Interfaz:
+
+- 📊 **Dashboard con estadísticas** en tiempo real
+- ➕ **Crear sesiones** de WhatsApp con un formulario simple
+- 📱 **Ver códigos QR** en modal para escanear fácilmente
+- 💬 **Enviar mensajes** directamente desde la interfaz
+- 📋 **Listar y gestionar** todas las sesiones activas
+- 🔄 **Actualización automática** cada 10 segundos
+- 🎨 **Diseño responsive** con Tailwind CSS
+- 🌈 **Estados visuales** con colores para cada estado de sesión
+
+### Acceso:
+
+```
+http://localhost:3000
+```
+
+### Captura de pantalla:
+
+La interfaz muestra:
+
+- Cards con estadísticas (Total, Conectadas, Esperando QR, Desconectadas)
+- Formulario para crear nuevas sesiones
+- Formulario para enviar mensajes
+- Lista de sesiones con botones de acción
+- Modal para visualizar códigos QR
 
 ### Opción 2: Docker
 

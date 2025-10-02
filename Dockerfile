@@ -15,6 +15,7 @@ RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY src ./src
+COPY public ./public
 
 # Build TypeScript
 RUN pnpm build
@@ -35,6 +36,7 @@ RUN pnpm install --prod --frozen-lockfile
 
 # Copy built files from builder
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/public ./public
 
 # Create sessions directory
 RUN mkdir -p ./sessions

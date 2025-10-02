@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuración - WhatsApp Multi-Instance</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+      <div class="bg-white rounded-lg shadow-md p-8">
+        <div class="flex items-center mb-6">
+          <i class="fas fa-cog text-3xl text-blue-600 mr-3"></i>
+          <h1 class="text-3xl font-bold text-gray-800">Configuración Inicial</h1>
+        </div>
+
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+          <div class="flex">
+            <i class="fas fa-exclamation-triangle text-yellow-400 mr-3 mt-1"></i>
+            <div>
+              <p class="font-bold text-yellow-800">Importante - Seguridad</p>
+              <p class="text-sm text-yellow-700 mt-1">
+                La API Key se almacenará en tu navegador (localStorage). En producción,
+                considera implementar un sistema de autenticación más robusto.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <form id="config-form" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-key mr-2"></i>
+              API Key
+            </label>
+            <input type="text" id="api-key-input" required
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
+              placeholder="change-me-in-production-use-a-strong-secret-key">
+            <p class="mt-2 text-sm text-gray-500">
+              Ingresa el API_SECRET_KEY configurado en tu archivo .env
+            </p>
+          </div>
+
+          <div class="flex space-x-4">
+            <button type="submit"
+              class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center space-x-2">
+              <i class="fas fa-save"></i>
+              <span>Guardar y Continuar</span>
+            </button>
+            <a href="/"
+              class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center space-x-2">
+              <i class="fas fa-home"></i>
+              <span>Ir al Dashboard</span>
+            </a>
+          </div>
+        </form>
+
+        <div class="mt-8 p-4 bg-blue-50 rounded-lg">
+          <h3 class="font-semibold text-blue-900 mb-2">
+            <i class="fas fa-info-circle mr-2"></i>
+            ¿Dónde encuentro mi API Key?
+          </h3>
+          <ol class="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+            <li>Abre el archivo <code class="bg-blue-100 px-2 py-1 rounded">.env</code> en tu proyecto</li>
+            <li>Busca la variable <code class="bg-blue-100 px-2 py-1 rounded">API_SECRET_KEY</code></li>
+            <li>Copia el valor y pégalo arriba</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Cargar configuración existente
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedApiKey = localStorage.getItem('whatsapp_api_key');
+      if (savedApiKey) {
+        document.getElementById('api-key-input').value = savedApiKey;
+      }
+    });
+
+    // Guardar configuración
+    document.getElementById('config-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const apiKey = document.getElementById('api-key-input').value;
+
+      if (apiKey) {
+        localStorage.setItem('whatsapp_api_key', apiKey);
+        alert('✅ Configuración guardada exitosamente');
+        window.location.href = '/';
+      }
+    });
+  </script>
+</body>
+
+</html>

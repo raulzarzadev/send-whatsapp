@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Multi-Instance Manager</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .status-connecting {
+      color: #f59e0b;
+    }
+
+    .status-qr {
+      color: #3b82f6;
+    }
+
+    .status-connected {
+      color: #10b981;
+    }
+
+    .status-disconnected {
+      color: #ef4444;
+    }
+
+    .qr-modal {
+      backdrop-filter: blur(4px);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .pulse-slow {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50">
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg">
+    <div class="container mx-auto px-4 py-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <i class="fab fa-whatsapp text-4xl"></i>
+          <div>
+            <h1 class="text-2xl font-bold">WhatsApp Multi-Instance</h1>
+            <p class="text-green-100 text-sm">Gestión de sesiones empresariales</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <a href="/config.html"
+            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center space-x-2">
+            <i class="fas fa-cog"></i>
+            <span class="hidden md:inline">Configuración</span>
+          </a>
+          <div class="text-right">
+            <p class="text-sm text-green-100">API Status</p>
+            <p id="api-status" class="font-semibold">
+              <i class="fas fa-circle-notch fa-spin"></i> Conectando...
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container mx-auto px-4 py-8">
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm">Total Sesiones</p>
+            <p id="total-sessions" class="text-3xl font-bold text-gray-800">0</p>
+          </div>
+          <div class="bg-blue-100 rounded-full p-3">
+            <i class="fas fa-list text-blue-600 text-2xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm">Conectadas</p>
+            <p id="connected-sessions" class="text-3xl font-bold text-green-600">0</p>
+          </div>
+          <div class="bg-green-100 rounded-full p-3">
+            <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm">Esperando QR</p>
+            <p id="qr-sessions" class="text-3xl font-bold text-blue-600">0</p>
+          </div>
+          <div class="bg-blue-100 rounded-full p-3">
+            <i class="fas fa-qrcode text-blue-600 text-2xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-500 text-sm">Desconectadas</p>
+            <p id="disconnected-sessions" class="text-3xl font-bold text-red-600">0</p>
+          </div>
+          <div class="bg-red-100 rounded-full p-3">
+            <i class="fas fa-times-circle text-red-600 text-2xl"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Left Column: Create Session -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-plus-circle text-green-600 mr-2"></i>
+            Nueva Sesión
+          </h2>
+
+          <form id="create-session-form" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                ID del Cliente
+              </label>
+              <input type="text" id="client-id" required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                placeholder="ej: restaurante-xyz">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                ID de Sesión (opcional)
+              </label>
+              <input type="text" id="session-id"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                placeholder="Generado automáticamente">
+            </div>
+
+            <button type="submit"
+              class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center space-x-2">
+              <i class="fas fa-plus"></i>
+              <span>Crear Sesión</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Send Message Card -->
+        <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-paper-plane text-blue-600 mr-2"></i>
+            Enviar Mensaje
+          </h2>
+
+          <form id="send-message-form" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Sesión
+              </label>
+              <select id="message-session-id" required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="">Selecciona una sesión</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Número (con código de país)
+              </label>
+              <input type="text" id="message-to" required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="ej: 521234567890">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Mensaje
+              </label>
+              <textarea id="message-text" required rows="4"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Escribe tu mensaje aquí..."></textarea>
+            </div>
+
+            <button type="submit"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center space-x-2">
+              <i class="fas fa-paper-plane"></i>
+              <span>Enviar Mensaje</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right Column: Sessions List -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-gray-800 flex items-center">
+              <i class="fas fa-list text-gray-600 mr-2"></i>
+              Sesiones Activas
+            </h2>
+            <button onclick="loadSessions()"
+              class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition duration-200 flex items-center space-x-2">
+              <i class="fas fa-sync-alt"></i>
+              <span>Actualizar</span>
+            </button>
+          </div>
+
+          <div id="sessions-container" class="space-y-4">
+            <!-- Sessions will be loaded here -->
+            <div class="text-center py-12 text-gray-400">
+              <i class="fas fa-inbox text-6xl mb-4"></i>
+              <p class="text-lg">No hay sesiones aún</p>
+              <p class="text-sm">Crea tu primera sesión para comenzar</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Modal -->
+  <div id="qr-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 qr-modal flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 fade-in">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-gray-800">Escanear Código QR</h3>
+          <button onclick="closeQRModal()" class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times text-2xl"></i>
+          </button>
+        </div>
+
+        <div class="text-center">
+          <div id="qr-code-container" class="bg-gray-100 p-6 rounded-lg mb-4">
+            <div class="flex items-center justify-center h-64">
+              <i class="fas fa-circle-notch fa-spin text-4xl text-gray-400"></i>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left text-sm text-blue-800">
+            <p class="font-semibold mb-2">📱 Instrucciones:</p>
+            <ol class="list-decimal list-inside space-y-1">
+              <li>Abre WhatsApp en tu teléfono</li>
+              <li>Ve a Configuración > Dispositivos vinculados</li>
+              <li>Toca en "Vincular dispositivo"</li>
+              <li>Escanea este código QR</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="hidden fixed bottom-4 right-4 z-50"></div>
+
+  <script src="/js/app.js"></script>
+</body>
+
+</html>

@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express'
 import { SessionManager } from '../services/SessionManager'
 import { CreateSessionRequest, SendMessageRequest } from '../types'
 
-const router = Router()
+const router: Router = Router()
 const sessionManager = new SessionManager()
 
 // Restaurar sesiones al iniciar
