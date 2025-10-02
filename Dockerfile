@@ -3,40 +3,32 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install pnpm
-RUN npm install -g pnpm
-
 # Copy package files
 COPY package.json ./
-COPY pnpm-lock.yaml* ./
 
-# Copy tsconfig (with wildcard to make it optional)
+# Install dependencies with npm
+RUN npm install
+
+# Copy tsconfig
 COPY tsconfig.json* ./
-
-# Install dependencies
-RUN pnpm install
 
 # Copy source code
 COPY src ./src
 COPY public ./public
 
 # Build TypeScript
-RUN pnpm build
+RUN npm run build
 
 # Production stage
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Install pnpm
-RUN npm install -g pnpm
-
 # Copy package files
 COPY package.json ./
 
-
-# Install production dependencies only
-RUN pnpm install --prod
+# Install production dependencies only with npm
+RUN npm install --omit=dev
 
 # Copy built files from builder
 COPY --from=builder /app/dist ./dist
