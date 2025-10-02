@@ -8,9 +8,16 @@ node_modules/
 sessions/
 sessions/**/*.json
 
+# Base de datos
+data/
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
 # Archivos importantes que NO deben ignorarse
 !package.json
-!package-lock.json
+!pnpm-lock.yaml
 !tsconfig.json
 
 # Backups

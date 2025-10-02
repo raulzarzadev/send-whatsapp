@@ -18,3 +18,25 @@ export interface CreateSessionRequest {
   clientId: string
   sessionId?: string
 }
+
+export interface MessageLog {
+  id?: number
+  sessionId: string
+  clientId: string
+  to: string
+  message: string
+  status: 'sent' | 'failed'
+  error?: string
+  timestamp: Date
+}
+
+export interface MessageLogFilters {
+  sessionId?: string
+  clientId?: string
+  to?: string
+  status?: 'sent' | 'failed'
+  startDate?: Date
+  endDate?: Date
+  limit?: number
+  offset?: number
+}

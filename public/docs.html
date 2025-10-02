@@ -157,6 +157,12 @@
             <a href="#send-message" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded ml-4">
               └ Enviar Mensaje
             </a>
+            <a href="#get-logs" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded ml-4">
+              └ Obtener Logs
+            </a>
+            <a href="#get-stats" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded ml-4">
+              └ Estadísticas
+            </a>
             <a href="#errores" class="nav-link block py-2 px-3 text-sm text-gray-700 rounded">
               <i class="fas fa-exclamation-triangle mr-2 text-red-500"></i>Códigos de Error
             </a>
@@ -618,6 +624,160 @@
     "sessionId": "session-001",
     "to": "521234567890",
     "sentAt": "2025-10-02T10:35:00.000Z"
+  }
+}</code></pre>
+              </div>
+            </div>
+
+            <!-- Get Message Logs -->
+            <div id="get-logs" class="endpoint-card border-l-4 border-green-500 bg-gray-50 rounded-lg p-6 mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                  <span class="method-badge method-get">GET</span>
+                  <code class="text-lg font-mono text-gray-800">/messages/logs</code>
+                </div>
+                <i class="fas fa-history text-green-500 text-2xl"></i>
+              </div>
+              <p class="text-gray-600 mb-4">Obtiene el historial de mensajes enviados con filtros opcionales.</p>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Query Parameters (Opcionales):</h4>
+              <div class="bg-white rounded border border-gray-200 overflow-hidden mb-4">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-100">
+                    <tr>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Parámetro</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Tipo</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Descripción</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">sessionId</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">string</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">Filtrar por ID de sesión</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">clientId</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">string</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">Filtrar por ID de cliente</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">to</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">string</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">Filtrar por número de destino</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">status</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">string</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">Filtrar por estado: 'sent' o 'failed'</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">startDate</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">string</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">Fecha de inicio (ISO 8601)</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">endDate</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">string</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">Fecha de fin (ISO 8601)</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">limit</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">number</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">Límite de resultados</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">offset</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">number</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">Desplazamiento para paginación</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Respuesta Exitosa (200):</h4>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)"
+                  class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-json">{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "sessionId": "session-001",
+      "clientId": "restaurante-xyz",
+      "to": "521234567890",
+      "message": "¡Hola! Este es un mensaje de prueba.",
+      "status": "sent",
+      "error": null,
+      "timestamp": "2025-10-02T10:35:00.000Z"
+    },
+    {
+      "id": 2,
+      "sessionId": "session-001",
+      "clientId": "restaurante-xyz",
+      "to": "529876543210",
+      "message": "Segundo mensaje",
+      "status": "failed",
+      "error": "Session not connected",
+      "timestamp": "2025-10-02T10:40:00.000Z"
+    }
+  ],
+  "count": 2
+}</code></pre>
+              </div>
+            </div>
+
+            <!-- Get Message Stats -->
+            <div id="get-stats" class="endpoint-card border-l-4 border-green-500 bg-gray-50 rounded-lg p-6 mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                  <span class="method-badge method-get">GET</span>
+                  <code class="text-lg font-mono text-gray-800">/messages/stats</code>
+                </div>
+                <i class="fas fa-chart-bar text-green-500 text-2xl"></i>
+              </div>
+              <p class="text-gray-600 mb-4">Obtiene estadísticas de mensajes enviados.</p>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Query Parameters (Opcionales):</h4>
+              <div class="bg-white rounded border border-gray-200 overflow-hidden mb-4">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-100">
+                    <tr>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Parámetro</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Tipo</th>
+                      <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700">Descripción</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">sessionId</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">string</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">Filtrar por ID de sesión</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 text-sm font-mono text-gray-800">clientId</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">string</td>
+                      <td class="px-4 py-2 text-sm text-gray-600">Filtrar por ID de cliente</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h4 class="font-semibold text-gray-800 mb-2">Respuesta Exitosa (200):</h4>
+              <div class="code-block relative">
+                <button onclick="copyCode(this)"
+                  class="copy-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                  <i class="fas fa-copy mr-1"></i>Copiar
+                </button>
+                <pre><code class="language-json">{
+  "success": true,
+  "data": {
+    "total": 150,
+    "sent": 142,
+    "failed": 8
   }
 }</code></pre>
               </div>
