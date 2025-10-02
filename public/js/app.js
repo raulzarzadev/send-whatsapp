@@ -1,12 +1,16 @@
 // Configuration
 const API_BASE_URL = window.location.origin + '/api'
 
-// Get API Key from localStorage or use default
+// Get API Key from sessionStorage (más seguro que localStorage)
 function getApiKey() {
-  return (
-    localStorage.getItem('whatsapp_api_key') ||
-    'change-me-in-production-use-a-strong-secret-key'
-  )
+  const key = sessionStorage.getItem('whatsapp_api_key')
+  // Si no hay key en sessionStorage, redirigir a configuración
+  if (!key && !window.location.pathname.includes('config.html')) {
+    window.location.href = '/config.html'
+    return ''
+  }
+
+  return key || 'change-me-in-production-use-a-strong-secret-key'
 }
 
 // Utility Functions
