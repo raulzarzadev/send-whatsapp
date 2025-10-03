@@ -8,15 +8,20 @@ export class DatabaseService {
   private dbPath: string
 
   constructor() {
+    // Configurar ruta de la base de datos
+    this.dbPath =
+      process.env.DB_PATH || path.join(process.cwd(), 'data', 'whatsapp.db')
+
     // Crear directorio para la base de datos si no existe
-    const dbPath = process.env.DB_PATH || '/data/whatsapp.db'
-    const dbDir = path.join(process.cwd(), 'data')
+    const dbDir = path.dirname(this.dbPath)
     if (!fs.existsSync(dbDir)) {
       fs.mkdirSync(dbDir, { recursive: true })
+      console.log(`📁 Directorio de base de datos creado: ${dbDir}`)
     }
 
-    this.dbPath = path.join(dbDir, dbPath)
+    // Inicializar base de datos
     this.db = new Database(this.dbPath)
+    console.log(`💾 Base de datos inicializada: ${this.dbPath}`)
     this.initializeDatabase()
   }
 
