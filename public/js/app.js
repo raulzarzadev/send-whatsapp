@@ -525,21 +525,35 @@ function renderMessagesTable(messages) {
 
 async function populateSessionFilter() {
   try {
-    const response = await apiRequest('/sessions')
-    const sessions = response.data || response // Manejar ambos formatos
+    // Obtener todos los mensajes sin límite para extraer las sesiones únicas
+    const response = await apiRequest('/messages/logs?limit=1000')
+    const logs = response.data || []
     const select = document.getElementById('filter-session')
 
     // Keep "Todas" option
     select.innerHTML = '<option value="">Todas</option>'
 
-    // Asegurar que sessions es un array
-    if (Array.isArray(sessions)) {
-      sessions.forEach((session) => {
+    // Asegurar que logs es un array
+    if (Array.isArray(logs) && logs.length > 0) {
+      // Extraer sesiones únicas de los mensajes
+      const uniqueSessions = new Map()
+
+      logs.forEach((log) => {
+        if (log.sessionId && !uniqueSessions.has(log.sessionId)) {
+          uniqueSessions.set(log.sessionId, {
+            sessionId: log.sessionId,
+            clientId: log.clientId
+          })
+        }
+      })
+
+      // Agregar las sesiones únicas al selector
+      uniqueSessions.forEach((session) => {
         const option = document.createElement('option')
         option.value = session.sessionId
         option.textContent = `${
-          session.clientId ? `(${session.clientId})` : ''
-        }`
+          session.clientId ? ` (${session.clientId})` : ''
+        } ${session.sessionId}`
         select.appendChild(option)
       })
     }
