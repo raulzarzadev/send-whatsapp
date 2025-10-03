@@ -525,7 +525,8 @@ function renderMessagesTable(messages) {
 
 async function populateSessionFilter() {
   try {
-    const sessions = await apiRequest('/sessions')
+    const response = await apiRequest('/sessions')
+    const sessions = response.data || response // Manejar ambos formatos
     const select = document.getElementById('filter-session')
 
     // Keep "Todas" option
@@ -536,7 +537,9 @@ async function populateSessionFilter() {
       sessions.forEach((session) => {
         const option = document.createElement('option')
         option.value = session.sessionId
-        option.textContent = session.sessionId
+        option.textContent = `${
+          session.clientId ? `(${session.clientId})` : ''
+        }`
         select.appendChild(option)
       })
     }
