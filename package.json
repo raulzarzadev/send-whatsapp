@@ -1,7 +1,7 @@
 {
-  "name": "send-whatsapp",
+  "name": "automated-messages",
   "version": "1.0.0",
-  "description": "Multi-instance WhatsApp API service using Baileys",
+  "description": "Automated Messages - Multi-instance WhatsApp API service using Baileys",
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
@@ -13,7 +13,8 @@
     "whatsapp",
     "baileys",
     "api",
-    "multi-instance"
+    "multi-instance",
+    "automated-messages"
   ],
   "author": "",
   "license": "MIT",

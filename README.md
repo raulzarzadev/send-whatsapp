@@ -1,6 +1,6 @@
-# WhatsApp Multi-Instance API 📱
+# Automated Messages 📱
 
-API RESTful con interfaz web para gestionar múltiples instancias de WhatsApp usando [Baileys](https://github.com/WhiskeySockets/Baileys). Perfecto para empresas que necesitan conectar múltiples números de WhatsApp a diferentes clientes o aplicaciones.
+API RESTful con interfaz web para gestionar múltiples instancias de WhatsApp usando [Baileys](https://github.com/WhiskeySockets/Baileys). Perfecto para empresas que necesitan automatizar mensajes y conectar múltiples números de WhatsApp a diferentes clientes o aplicaciones.
 
 > 🚀 **¿Primera vez?** Lee la [Guía de Inicio Rápido](QUICKSTART.md) para estar funcionando en 5 minutos.
 
