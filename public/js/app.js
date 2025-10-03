@@ -80,6 +80,16 @@ function getStatusBadge(status) {
     `
 }
 
+function formatErrorMessage(error) {
+  if (!error) return ''
+  if (typeof error === 'string') return error
+  try {
+    return JSON.stringify(error, null, 2)
+  } catch {
+    return String(error)
+  }
+}
+
 // API Functions
 async function apiRequest(endpoint, method = 'GET', body = null) {
   const options = {
@@ -483,13 +493,13 @@ function renderMessagesTable(messages) {
           ? '<span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full"><i class="fas fa-check"></i> Enviado</span>'
           : '<span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full"><i class="fas fa-times"></i> Fallido</span>'
 
-      const errorInfo = msg.error
-        ? `<br><small class="text-red-600" title="${
-            msg.error
-          }"><i class="fas fa-exclamation-circle"></i> ${msg.error.substring(
-            0,
-            50
-          )}...</small>`
+      const formattedError = formatErrorMessage(msg.error)
+      const errorInfo = formattedError
+        ? `
+          <div class="mt-2 text-xs text-red-600 bg-red-50 border border-red-200 rounded p-2 whitespace-pre-wrap break-words">
+            <i class="fas fa-exclamation-triangle mr-1"></i>${formattedError}
+          </div>
+        `
         : ''
 
       return `
